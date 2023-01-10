@@ -25,7 +25,7 @@ def animation_(solution, X, Y, fps, frn) -> None:
     ani.save('animation_convection_diffusion.gif', writer='pillow', fps=fps)
 
 if __name__ == '__main__':
-    print('SCRIPT HAS STARTED')
+    print('-------------------- \nSCRIPT HAS STARTED \n--------------------')
     dx = 0.01
     dt = 0.01
     x = np.arange(-5, 5, dx)
@@ -33,11 +33,11 @@ if __name__ == '__main__':
     X, Y = np.meshgrid(x, y)
     init = 10*(1/np.sqrt(0.01*2*np.pi))*np.exp(-(1/2)*((X**2 + Y**2)/0.01))
     heat_array = d.diffusion_2dims(100, 100, dt, dx, 0.1, init)
-    print('CLASS INITIALIZED SUCCESSFULLY')
+    print('CLASS INITIALIZED SUCCESSFULLY \n--------------------')
     solution = heat_array.solve()
     print('SOLUTION FOUND')
     animation_(solution, X, Y, 100, 100)
-    print('PLOT RAN SUCCESSFULLY')
-    print('SCRIPT FINISHED \nSCRIPT RAN SUCCESSFULLY')
+    print('PLOT RAN SUCCESSFULLY \n--------------------')
+    print('SCRIPT FINISHED \nSCRIPT RAN SUCCESSFULLY \n--------------------')
 
 
