@@ -11,7 +11,7 @@ import numpy as np
 # Note: `diffusion` is the diffusion coefficent and is constant.
 # Note: `init` is the initial condition
 class diffusion_2dims:
-    def __init__(self, targs, sargs, dt, dx, diffusion, init) -> None:
+    def __init__(self, targs: int, sargs: int, dt: float, dx: float, diffusion: float, init: np.ndarray) -> None:
         self.targs = targs
         self.sargs = sargs
         self.dt = dt
@@ -43,8 +43,16 @@ class diffusion_2dims:
         
         return np.array(temp)
 
+# Uses the finite difference method in 1 dimension to solve the linear diffusion equation.
+# Dirichlet boundary conditions are automaticly applied in the `solve` method.
+# Note: The number of iterative steps in x-direction take
+# the argument `sargs`. The time steps takes the argument `targs` with
+# step size denoted by `dt`.
+# Note: dx denoted by the parameter `dx`.
+# Note: `diffusion` is the diffusion coefficent and is constant.
+# Note: `init` is the initial condition
 class diffuision_1dims:
-    def __init__(self, targs, sargs, dt, dx, diffusion, init) -> None:
+    def __init__(self, targs: int, sargs: int, dt: float, dx: float, diffusion: float, init: np.ndarray) -> None:
         self.targs = targs
         self.sargs = sargs
         self.dt = dt
