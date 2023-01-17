@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.animation as animation
 import diffusion as d
+import time
 
 # Animation function for 2 dimensional solution
 def animation_(solution, X, Y, fps, frn, filename) -> None:
@@ -21,7 +22,7 @@ def animation_(solution, X, Y, fps, frn, filename) -> None:
     ax.set_ylabel('Y (mm)')
     ax.set_zlabel('Temperature (2*K)')
     ani = animation.FuncAnimation(fig, change_plot, frn, fargs=(solution, plot), interval=1 / fps)
-    plt.show()
+    plt.close()
     ani.save(filename, writer='pillow', fps=fps)
 
 # Animation function for the 1 dimensional solution
@@ -39,7 +40,7 @@ def animation_1(solution, X, fps, frn, filename):
 
         # call the animator.  blit=True means only re-draw the parts that have changed.
         anim = animation.FuncAnimation(fig, animate, frames=frn, interval=20, blit=True)
-        plt.show()
+        plt.close()
         anim.save(filename, writer='pillow', fps=fps)
 
 
@@ -53,8 +54,9 @@ if __name__ == '__main__':
     init = 4*(1/np.sqrt(0.01*2*np.pi))*np.exp(-(1/2)*((X**2 + Y**2)/0.01))
     heat_array = d.diffusion_2dims(100, 100, dt, dx, 0.1, init)
     print('OBJECT INITIALIZED SUCCESSFULLY \n--------------------')
-    solution = heat_array.solve_Dirichlet(boundary=[1,1,1,1,1])
-    if solution != None:
+    solution = heat_array.solve_Dirichlet(boundary=[0,0,0,0])
+    print(time.time())
+    if isinstance(solution, np.ndarray):
         print('SOLUTION FOUND')
     else:
         print('--------------------\nSOLUTION NOT FOUND')
