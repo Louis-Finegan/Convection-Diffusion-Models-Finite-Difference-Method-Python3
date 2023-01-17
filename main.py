@@ -53,10 +53,15 @@ if __name__ == '__main__':
     init = 4*(1/np.sqrt(0.01*2*np.pi))*np.exp(-(1/2)*((X**2 + Y**2)/0.01))
     heat_array = d.diffusion_2dims(100, 100, dt, dx, 0.1, init)
     print('OBJECT INITIALIZED SUCCESSFULLY \n--------------------')
-    solution = heat_array.solve()
-    print('SOLUTION FOUND')
-    animation_(solution, X, Y, 100, 100, 'animation_diffusion.gif')
-    print('PLOT SAVED SUCCESSFULLY \n--------------------')
-    print('SCRIPT FINISHED \nSCRIPT RAN SUCCESSFULLY \n--------------------')
-
+    solution = heat_array.solve_Dirichlet(boundary=[1,1,1,1,1])
+    if solution != None:
+        print('SOLUTION FOUND')
+    else:
+        print('--------------------\nSOLUTION NOT FOUND')
+    try:   
+        animation_(solution, X, Y, 100, 100, 'animation_diffusion.gif')
+        print('PLOT SAVED SUCCESSFULLY \n--------------------')
+        print('SCRIPT FINISHED \nSCRIPT RAN SUCCESSFULLY \n--------------------')
+    except:
+        print('--------------------\nFAILED TO RENDER PLOT\n--------------------\nSCRIPT RAN UNSUCCESSFULLY')
 
