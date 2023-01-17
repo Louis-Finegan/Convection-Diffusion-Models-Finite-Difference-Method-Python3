@@ -19,7 +19,7 @@ class diffusion_2dims:
         self.diffusion = diffusion
         self.init = init
 
-    # Solves the 2d linear diffusion equation
+    # Solves the 2d linear diffusion equation with Dirichlet boundary conditions
     def solve_Dirichlet(self, boundary: list) -> np.ndarray:
         try:
             if len(boundary) == 4:  
@@ -69,6 +69,7 @@ class diffuision_1dims:
         self.diffusion = diffusion
         self.init = init
 
+    # Solves the 1d linear diffusion equation with Dirichlet boundary conditions
     def solve_Dirichlet(self, boundary: list) -> np.ndarray:
         try:    
             if len(boundary) == 2:  
