@@ -1,5 +1,5 @@
 
-# Numpy is used
+# Numpy is used to preform vectorized operations on the solution arrays
 import numpy as np
 
 # Uses the finite difference method in 2 dimensions to solve the linear diffusion equation
@@ -12,6 +12,31 @@ import numpy as np
 # Note: `diffusion` is the diffusion coefficent and is constant.
 # Note: `init` is the initial condition
 class diffusion_2dims:
+    '''
+    ## Diffusion equation in 2 dimensions
+    
+    ### PARAMETERS:
+
+    1. `targs: int` number of time steps.
+    2. `sargs: int` number of spacial steps and is the same for both x-direction and y-direction.
+    3. `dt: float` distance between time steps.
+    4. `dx: float` distance between spacial steps.
+    5. `diffusion: float` diffusion coefficent.
+    6. `init: np.ndarray` initial condition.
+
+    ### Methods:
+
+    1. Solve the diffusion equation under Dirichlet Boundary Conditions:
+
+    >>>`diffusion_2dims.solve_Dirichlet(self, boundary: list)`
+
+    2. Solve the diffusion equation under Neumann Boundary Conditions:
+
+    >>>`diffusion_2dims.solve_Neumann(self, boundary: list)` 
+
+
+    '''
+
     def __init__(self, targs: int, sargs: int, dt: float, dx: float, diffusion: float, init: np.ndarray) -> None:
         self.targs = targs
         self.sargs = sargs
@@ -22,6 +47,30 @@ class diffusion_2dims:
 
     # Solves the 2d linear diffusion equation with Dirichlet boundary conditions
     def solve_Dirichlet(self, boundary: list) -> np.ndarray:
+        '''
+        ## Solves the diffusion equation under Dirichlet Boundary Conditions in 2 dimensions:
+
+        Uses the Finite difference method.
+
+        ### PARAMETERS:
+
+        1. `boundary: list` the constant values along the boundary
+
+        local variable `temp: list` are the solution list of spacial arrays for each time step.
+
+        Dirichlet Boundary Conditions:
+
+        `temp[iargs][:, 0] = boundary[0]` \n
+        `temp[iargs][:, -1] = boundary[1]` \n
+        `temp[iargs][0, :] = boundary[2]` \n
+        `temp[iargs][-1, :] = boundary[3]`
+         
+        ### RETURNS:
+
+        solution array over all time steps:
+
+        `temp: np.ndarray`
+        '''
         try:
             if len(boundary) == 4:  
                 temp = []
@@ -52,6 +101,30 @@ class diffusion_2dims:
 
     # Solves the 2d linear diffusion equation with Neumann boundary conditions
     def solve_Neumann(self, boundary_flux: list):
+        '''
+        ## Solves the diffusion equation under Neumann Boundary Conditions in 2 dimensions:
+
+        Uses the Finite difference method.
+
+        ### PARAMETERS:
+
+        1. `boundary_flux: list` the constant flux along the boundary.
+
+        local variable `temp: list` are the solution list of spacial arrays for each time step.
+
+        Dirichlet Boundary Conditions:
+
+        `temp[iargs][:, 0] = temp[iargs][:, 1] - boundary_flux[0]*self.dx`\n
+        `temp[iargs][:, -1] = temp[iargs][:, -2] + boundary_flux[1]*self.dx`\n
+        `temp[iargs][0, :] = temp[iargs][1, :] - boundary_flux[2]*self.dx`\n
+        `temp[iargs][-1, :] = temp[iargs][-2, :] + boundary_flux[3]*self.dx`
+         
+        ### RETURNS:
+
+        solution array over all time steps:
+
+        `temp: np.ndarray`
+        '''
         try:
             if len(boundary_flux) == 4:  
                 temp = []
@@ -69,9 +142,9 @@ class diffusion_2dims:
                     )
 
                     # Neumann boundary conditions
-                    temp[iargs][:, 0] = temp[iargs][:, 1] + boundary_flux[0]*self.dx
+                    temp[iargs][:, 0] = temp[iargs][:, 1] - boundary_flux[0]*self.dx
                     temp[iargs][:, -1] = temp[iargs][:, -2] + boundary_flux[1]*self.dx
-                    temp[iargs][0, :] = temp[iargs][1, :] + boundary_flux[2]*self.dx
+                    temp[iargs][0, :] = temp[iargs][1, :] - boundary_flux[2]*self.dx
                     temp[iargs][-1, :] = temp[iargs][-2, :] + boundary_flux[3]*self.dx
                 
                 return np.array(temp)
@@ -91,6 +164,31 @@ class diffusion_2dims:
 # Note: `diffusion` is the diffusion coefficent and is constant.
 # Note: `init` is the initial condition
 class diffuision_1dims:
+    '''
+    ## Diffusion equation in 1 dimensions
+    
+    ### PARAMETERS:
+
+    1. `targs: int` number of time steps.
+    2. `sargs: int` number of spacial steps.
+    3. `dt: float` distance between time steps.
+    4. `dx: float` distance between spacial steps.
+    5. `diffusion: float` diffusion coefficent.
+    6. `init: np.ndarray` initial condition.
+
+    ### Methods:
+
+    1. Solve the diffusion equation under Dirichlet Boundary Conditions:
+
+    >>>`diffusion_2dims.solve_Dirichlet(self, boundary: list)`
+
+    2. Solve the diffusion equation under Neumann Boundary Conditions:
+
+    >>>`diffusion_2dims.solve_Neumann(self, boundary: list)` 
+
+    
+    '''
+
     def __init__(self, targs: int, sargs: int, dt: float, dx: float, diffusion: float, init: np.ndarray) -> None:
         self.targs = targs
         self.sargs = sargs
@@ -101,6 +199,28 @@ class diffuision_1dims:
 
     # Solves the 1d linear diffusion equation with Dirichlet boundary conditions
     def solve_Dirichlet(self, boundary: list) -> np.ndarray:
+        '''
+        ## Solves the diffusion equation under Dirichlet Boundary Conditions in 1 dimension:
+
+        Uses the Finite difference method.
+
+        ### PARAMETERS:
+
+        1. `boundary: list` the constant values along the boundary
+
+        local variable `temp: list` are the solution list of spacial arrays for each time step.
+
+        Dirichlet Boundary Conditions:
+
+        `temp[iargs][0] = boundary[0]` \n
+        `temp[iargs][-1] = boundary[1]`
+         
+        ### RETURNS:
+
+        solution array over all time steps:
+
+        `temp: np.ndarray`
+        '''
         try:    
             if len(boundary) == 2:  
                 temp = []
@@ -127,6 +247,28 @@ class diffuision_1dims:
             print(f'Boundary list which has lenght {len(boundary)} is the wrong size: length should be 2!')
 
     def solve_Neumann(self, boundary_flux: list):
+        '''
+        ## Solves the diffusion equation under Neumann Boundary Conditions in 1 dimension:
+
+        Uses the Finite difference method.
+
+        ### PARAMETERS:
+
+        1. `boundary_flux: list` the constant flux along the boundary.
+
+        local variable `temp: list` are the solution list of spacial arrays for each time step.
+
+        Dirichlet Boundary Conditions:
+
+        `temp[iargs][0] = temp[iargs][1] - boundary_flux[0]*self.dx`\n
+        `temp[iargs][-1] = temp[iargs][-2] + boundary_flux[1]*self.dx`
+         
+        ### RETURNS:
+
+        solution array over all time steps:
+
+        `temp: np.ndarray`
+        '''
         try:    
             if len(boundary_flux) == 2:  
                 temp = []
@@ -143,7 +285,7 @@ class diffuision_1dims:
                     )
 
                     # Dirichlet boundary conditions
-                    temp[iargs][0] = temp[iargs][1] + boundary_flux[0]*self.dx
+                    temp[iargs][0] = temp[iargs][1] - boundary_flux[0]*self.dx
                     temp[iargs][-1] = temp[iargs][-2] + boundary_flux[1]+self.dx
                 
                 return np.array(temp)
