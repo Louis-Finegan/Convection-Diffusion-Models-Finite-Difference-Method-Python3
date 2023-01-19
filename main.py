@@ -66,7 +66,7 @@ if __name__ == '__main__':
     else:
         print('--------------------\nSOLUTION NOT FOUND')
     try:   
-        animation_(solution, X, Y, 100, 100, 'animation_diffusion.gif')
+        animation_(solution, X, Y, 20, 200, 'animation_diffusion.gif')
         print('PLOT SAVED SUCCESSFULLY \n--------------------')
         print('SCRIPT FINISHED \nSCRIPT RAN SUCCESSFULLY \n--------------------')
     except:
