@@ -112,6 +112,17 @@ class convection_1dims:
             next_array = np.zeros(self.sargs)
             solution.append(next_array)
 
+            # Periodic Boundary Conditions
+            #solution[iargs + 1][0] = solution[iargs][0] +  ((self.convection*self.dt)/(2*self.dx))*(
+            #    solution[iargs][1] - solution[iargs][self.sargs-1]
+            #)
+
+            #solution[iargs + 1][self.sargs-1] = solution[iargs][self.sargs-1] + ((self.convection*self.dt)/(2*self.dx))*(
+            #    solution[iargs][0] - solution[iargs][self.sargs-2]
+            #)
+
+            solution[iargs + 1][0] = solution[iargs + 1][-1]
+
             # Finite difference method in 2 dimensions
             solution[iargs + 1] = solution[iargs] + ((self.convection*self.dt)/(2*self.dx))*(
             np.roll(solution[iargs], 1) - np.roll(solution[iargs], -1)
