@@ -1,0 +1,18 @@
+class pde
+
+init:
+    same as before
+    init() is a function
+
+repr()
+solution
+diffusion or convection
+init()
+dt
+Deltax
+x and y domain
+t domain
+
+
+solve()
+

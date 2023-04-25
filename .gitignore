@@ -1,20 +1,14 @@
 # Byte-compiled / optimized / DLL files
+.vscode/
 __pycache__/
-*.py[cod]
 
 # images
+img/
 *.gif
 *.png
 
-# Virtualenv
-# http://iamzed.com/2009/05/07/a-primer-on-virtualenv/
-.Python
-[Bb]in
-[Ii]nclude
-[Ll]ib
-[Ll]ib64
-[Ll]ocal
-[Ss]cripts
-pyvenv.cfg
-.venv
-pip-selfcheck.json
+# main.py
+main.py
+
+# plain text
+.txt

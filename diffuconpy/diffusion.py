@@ -37,7 +37,7 @@ class diffusion_2dims:
 
     '''
 
-    def __init__(self, targs: int, sargs: int, dt: float, dx: float, diffusion: float, init: np.ndarray) -> None:
+    def __init__(self, targs: int, sargs: int, dt: float, dx: float, diffusion: float, init: np.ndarray):
         self.targs = targs
         self.sargs = sargs
         self.dt = dt
@@ -46,7 +46,7 @@ class diffusion_2dims:
         self.init = init
 
     # Solves the 2d linear diffusion equation with Dirichlet boundary conditions
-    def solve_Dirichlet(self, boundary: list) -> np.ndarray:
+    def solve_Dirichlet(self, boundary: list):
         '''
         ## Solves the diffusion equation under Dirichlet Boundary Conditions in 2 dimensions:
 
@@ -56,48 +56,48 @@ class diffusion_2dims:
 
         1. `boundary: list` the constant values along the boundary
 
-        local variable `temp: list` are the solution list of spacial arrays for each time step.
+        local variable `solution: list` are the solution list of spacial arrays for each time step.
 
         Dirichlet Boundary Conditions:
 
-        `temp[iargs][:, 0] = boundary[0]` \n
-        `temp[iargs][:, -1] = boundary[1]` \n
-        `temp[iargs][0, :] = boundary[2]` \n
-        `temp[iargs][-1, :] = boundary[3]`
+        `solution[iargs][:, 0] = boundary[0]` \n
+        `solution[iargs][:, -1] = boundary[1]` \n
+        `solution[iargs][0, :] = boundary[2]` \n
+        `solution[iargs][-1, :] = boundary[3]`
          
         ### RETURNS:
 
         solution array over all time steps:
 
-        `temp: np.ndarray`
+        `solution: np.ndarray`
         '''
-        try:
-            if len(boundary) == 4:  
-                temp = []
-                temp.append(self.init)
-                for iargs in range(0, self.targs):
-
-                    # sets up next arrage of zeros in solution list 
-                    next_array = np.zeros((self.sargs, self.sargs))
-                    temp.append(next_array)
-
-                    # Finite difference method in 2 dimensions
-                    temp[iargs + 1] = temp[iargs] + ((self.diffusion*self.dt)/self.dx)*(
-                    np.roll(temp[iargs], 1, axis=1) + np.roll(temp[iargs], -1, axis=1) + 
-                    np.roll(temp[iargs], 1, axis=0) + np.roll(temp[iargs], -1, axis=0) - 4*temp[iargs]
-                    )
-
-                    # Dirichlet boundary conditions
-                    temp[iargs][:, 0] = boundary[0]
-                    temp[iargs][:, -1] = boundary[1]
-                    temp[iargs][0, :] = boundary[2]
-                    temp[iargs][-1, :] = boundary[3]
+        
+        if len(boundary) != 4:
+            raise ValueError(f'Boundary list should have a lenght of 4 but boundary list is given with lenght {len(boundary)}')  
                 
-                return np.array(temp)
-            else:
-                print(f'Boundary list which has lenght {len(boundary)} is the wrong size: length should be 4!')
-        except:
-            print(f'Boundary list which has lenght {len(boundary)} is the wrong size: length should be 4!')
+                
+        solution = []
+        solution.append(self.init)
+        for iargs in range(0, self.targs):
+
+            # sets up next arrage of zeros in solution list 
+            next_array = np.zeros((self.sargs, self.sargs))
+            solution.append(next_array)
+
+            # Finite difference method in 2 dimensions
+            solution[iargs + 1] = solution[iargs] + ((self.diffusion*self.dt)/self.dx**2)*(
+            np.roll(solution[iargs], 1, axis=1) + np.roll(solution[iargs], -1, axis=1) + 
+            np.roll(solution[iargs], 1, axis=0) + np.roll(solution[iargs], -1, axis=0) - 4*solution[iargs]
+            )
+
+            # Dirichlet boundary conditions
+            solution[iargs][:, 0] = boundary[0]
+            solution[iargs][:, -1] = boundary[1]
+            solution[iargs][0, :] = boundary[2]
+            solution[iargs][-1, :] = boundary[3]
+                
+        return _pde('2 Dimensions', 'Dirichlet', np.array(solution), boundary, self.init, self.dt, self.dx, [self.sargs, self.targs])
+            
 
     # Solves the 2d linear diffusion equation with Neumann boundary conditions
     def solve_Neumann(self, boundary_flux: list):
@@ -110,48 +110,47 @@ class diffusion_2dims:
 
         1. `boundary_flux: list` the constant flux along the boundary.
 
-        local variable `temp: list` are the solution list of spacial arrays for each time step.
+        local variable `solution: list` are the solution list of spacial arrays for each time step.
 
         Dirichlet Boundary Conditions:
 
-        `temp[iargs][:, 0] = temp[iargs][:, 1] - boundary_flux[0]*self.dx`\n
-        `temp[iargs][:, -1] = temp[iargs][:, -2] + boundary_flux[1]*self.dx`\n
-        `temp[iargs][0, :] = temp[iargs][1, :] - boundary_flux[2]*self.dx`\n
-        `temp[iargs][-1, :] = temp[iargs][-2, :] + boundary_flux[3]*self.dx`
+        `solution[iargs][:, 0] = solution[iargs][:, 1] - boundary_flux[0]*self.dx`\n
+        `solution[iargs][:, -1] = solution[iargs][:, -2] + boundary_flux[1]*self.dx`\n
+        `solution[iargs][0, :] = solution[iargs][1, :] - boundary_flux[2]*self.dx`\n
+        `solution[iargs][-1, :] = solution[iargs][-2, :] + boundary_flux[3]*self.dx`
          
         ### RETURNS:
 
         solution array over all time steps:
 
-        `temp: np.ndarray`
+        `solution: np.ndarray`
         '''
-        try:
-            if len(boundary_flux) == 4:  
-                temp = []
-                temp.append(self.init)
-                for iargs in range(0, self.targs):
-
-                    # sets up next arrage of zeros in solution list 
-                    next_array = np.zeros((self.sargs, self.sargs))
-                    temp.append(next_array)
-
-                    # Finite difference method in 2 dimensions
-                    temp[iargs + 1] = temp[iargs] + ((self.diffusion*self.dt)/self.dx)*(
-                    np.roll(temp[iargs], 1, axis=1) + np.roll(temp[iargs], -1, axis=1) + 
-                    np.roll(temp[iargs], 1, axis=0) + np.roll(temp[iargs], -1, axis=0) - 4*temp[iargs]
-                    )
-
-                    # Neumann boundary conditions
-                    temp[iargs][:, 0] = temp[iargs][:, 1] - boundary_flux[0]*self.dx
-                    temp[iargs][:, -1] = temp[iargs][:, -2] + boundary_flux[1]*self.dx
-                    temp[iargs][0, :] = temp[iargs][1, :] - boundary_flux[2]*self.dx
-                    temp[iargs][-1, :] = temp[iargs][-2, :] + boundary_flux[3]*self.dx
+        
+        if len(boundary_flux) != 4:
+            raise ValueError(f'Boundary flux list should have a lenght of 4 but boundary_flux list is given with lenght {len(boundary_flux)}')  
                 
-                return np.array(temp)
-            else:
-                print(f'Boundary list which has lenght {len(boundary_flux)} is the wrong size: length should be 4!')
-        except:
-            print(f'Boundary list which has lenght {len(boundary_flux)} is the wrong size: length should be 4!')
+        solution = []
+        solution.append(self.init)
+        for iargs in range(0, self.targs):
+
+            # sets up next arrage of zeros in solution list
+            next_array = np.zeros((self.sargs, self.sargs))
+            solution.append(next_array)
+
+            # Finite difference method in 2 dimensions
+            solution[iargs + 1] = solution[iargs] + ((self.diffusion*self.dt)/self.dx**2)*(
+            np.roll(solution[iargs], 1, axis=1) + np.roll(solution[iargs], -1, axis=1) + 
+            np.roll(solution[iargs], 1, axis=0) + np.roll(solution[iargs], -1, axis=0) - 4*solution[iargs]
+            )
+
+            # Neumann boundary conditions
+            solution[iargs][:, 0] = solution[iargs][:, 1] - boundary_flux[0]*self.dx
+            solution[iargs][:, -1] = solution[iargs][:, -2] + boundary_flux[1]*self.dx
+            solution[iargs][0, :] = solution[iargs][1, :] - boundary_flux[2]*self.dx
+            solution[iargs][-1, :] = solution[iargs][-2, :] + boundary_flux[3]*self.dx
+                
+        return _pde('2 Dimensions', 'Neumann', np.array(solution), boundary_flux, self.init, self.dt, self.dx, [self.sargs, self.targs])
+            
 
 
 # Uses the finite difference method in 1 dimension to solve the linear diffusion equation.
@@ -189,7 +188,7 @@ class diffuision_1dims:
     
     '''
 
-    def __init__(self, targs: int, sargs: int, dt: float, dx: float, diffusion: float, init: np.ndarray) -> None:
+    def __init__(self, targs: int, sargs: int, dt: float, dx: float, diffusion: float, init: np.ndarray):
         self.targs = targs
         self.sargs = sargs
         self.dt = dt
@@ -198,7 +197,7 @@ class diffuision_1dims:
         self.init = init
 
     # Solves the 1d linear diffusion equation with Dirichlet boundary conditions
-    def solve_Dirichlet(self, boundary: list) -> np.ndarray:
+    def solve_Dirichlet(self, boundary: list):
         '''
         ## Solves the diffusion equation under Dirichlet Boundary Conditions in 1 dimension:
 
@@ -208,43 +207,41 @@ class diffuision_1dims:
 
         1. `boundary: list` the constant values along the boundary
 
-        local variable `temp: list` are the solution list of spacial arrays for each time step.
+        local variable `solution: list` are the solution list of spacial arrays for each time step.
 
         Dirichlet Boundary Conditions:
 
-        `temp[iargs][0] = boundary[0]` \n
-        `temp[iargs][-1] = boundary[1]`
+        `solution[iargs][0] = boundary[0]` \n
+        `solution[iargs][-1] = boundary[1]`
          
         ### RETURNS:
 
         solution array over all time steps:
 
-        `temp: np.ndarray`
+        `solution: np.ndarray`
         '''
-        try:    
-            if len(boundary) == 2:  
-                temp = []
-                temp.append(self.init)
-                for iargs in range(0, self.targs):
+           
+        if len(boundary) != 2:
+            raise ValueError(f'Boundary list should have a lenght of 2 but boundary list is given with lenght {len(boundary)}')  
+        
+        solution = []
+        solution.append(self.init)
+        for iargs in range(0, self.targs):
 
-                    # sets up next arrage of zeros in solution list 
-                    next_array = np.zeros(self.sargs)
-                    temp.append(next_array)
+            # sets up next arrage of zeros in solution list 
+            next_array = np.zeros(self.sargs)
+            solution.append(next_array)
 
-                    # Finite difference method in 1 dimension
-                    temp[iargs + 1] = temp[iargs] + ((self.diffusion*self.dt)/(self.dx**2))*(
-                    np.roll(temp[iargs], 1) + np.roll(temp[iargs], -1) - 2*temp[iargs]
-                    )
+            # Finite difference method in 1 dimension
+            solution[iargs + 1] = solution[iargs] + ((self.diffusion*self.dt)/(self.dx**2))*(
+            np.roll(solution[iargs], 1) + np.roll(solution[iargs], -1) - 2*solution[iargs]
+            )
 
-                    # Dirichlet boundary conditions
-                    temp[iargs][ 0] = boundary[0]
-                    temp[iargs][-1] = boundary[1]
+            # Dirichlet boundary conditions
+            solution[iargs][ 0] = boundary[0]
+            solution[iargs][-1] = boundary[1]
                 
-                return np.array(temp)
-            else:
-                print(f'Boundary list which has lenght {len(boundary)} is the wrong size: length should be 2!')
-        except:
-            print(f'Boundary list which has lenght {len(boundary)} is the wrong size: length should be 2!')
+        return _pde('1 Dimension', 'Dirichlet', np.array(solution), boundary, self.init, self.dt, self.dx, [self.sargs, self.targs])
 
     def solve_Neumann(self, boundary_flux: list):
         '''
@@ -256,40 +253,52 @@ class diffuision_1dims:
 
         1. `boundary_flux: list` the constant flux along the boundary.
 
-        local variable `temp: list` are the solution list of spacial arrays for each time step.
+        local variable `solution: list` are the solution list of spacial arrays for each time step.
 
         Dirichlet Boundary Conditions:
 
-        `temp[iargs][0] = temp[iargs][1] - boundary_flux[0]*self.dx`\n
-        `temp[iargs][-1] = temp[iargs][-2] + boundary_flux[1]*self.dx`
+        `solution[iargs][0] = solution[iargs][1] - boundary_flux[0]*self.dx`\n
+        `solution[iargs][-1] = solution[iargs][-2] + boundary_flux[1]*self.dx`
          
         ### RETURNS:
 
         solution array over all time steps:
 
-        `temp: np.ndarray`
+        `solution: np.ndarray`
         '''
-        try:    
-            if len(boundary_flux) == 2:  
-                temp = []
-                temp.append(self.init)
-                for iargs in range(0, self.targs):
-
-                    # sets up next arrage of zeros in solution list 
-                    next_array = np.zeros(self.sargs)
-                    temp.append(next_array)
-
-                    # Finite difference method in 1 dimension
-                    temp[iargs + 1] = temp[iargs] + ((self.diffusion*self.dt)/(self.dx**2))*(
-                    np.roll(temp[iargs], 1) + np.roll(temp[iargs], -1) - 2*temp[iargs]
-                    )
-
-                    # Dirichlet boundary conditions
-                    temp[iargs][0] = temp[iargs][1] - boundary_flux[0]*self.dx
-                    temp[iargs][-1] = temp[iargs][-2] + boundary_flux[1]+self.dx
+          
+        if len(boundary_flux) == 2: 
+            raise ValueError(f'Boundary flux list should have a lenght of 2 but boundary_flux list is given with lenght {len(boundary_flux)}') 
                 
-                return np.array(temp)
-            else:
-                print(f'Boundary list which has lenght {len(boundary_flux)} is the wrong size: length should be 2!')
-        except:
-            print(f'Boundary list which has lenght {len(boundary_flux)} is the wrong size: length should be 2!')
+        solution = []
+        solution.append(self.init)
+        for iargs in range(0, self.targs):
+
+            # sets up next arrage of zeros in solution list 
+            next_array = np.zeros(self.sargs)
+            solution.append(next_array)
+
+            # Finite difference method in 1 dimension
+            solution[iargs + 1] = solution[iargs] + ((self.diffusion*self.dt)/(self.dx**2))*(
+            np.roll(solution[iargs], 1) + np.roll(solution[iargs], -1) - 2*solution[iargs]
+            )
+
+            # Dirichlet boundary conditions
+            solution[iargs][0] = solution[iargs][1] - boundary_flux[0]*self.dx
+            solution[iargs][-1] = solution[iargs][-2] + boundary_flux[1]+self.dx
+                
+        return _pde('1 Dimension', 'Neumann', np.array(solution), boundary_flux, self.init, self.dt, self.dx, [self.sargs, self.targs])
+
+class _pde:
+    def __init__(self, pde_type: str, pde_boundary_type: str, solution: np.ndarray, boundary_conditions: list, initial_state: np.ndarray, dt: float, dx: float, step_size: list):
+        self.pde_type = pde_type
+        self.pde_boundary_type = pde_boundary_type
+        self.solution = solution
+        self.boundary_conditions = boundary_conditions
+        self.initial_state = initial_state
+        self.dt = dt
+        self.dx = dx
+        self.step_size = step_size
+
+    def __repr__(self):
+        return f'Diffusion in {self.pde_type} with {self.pde_boundary_type} Conditions\nSolution: {self.solution}\nBoundary Conditions {self.boundary_conditions}\nInitial State: {self.initial_state}\ndt: {self.dt}\ndx = dy: {self.dx}\nNumber of steps in x and y: {self.step_size[0]}\nNumber of time steps {self.step_size[1]}'               
