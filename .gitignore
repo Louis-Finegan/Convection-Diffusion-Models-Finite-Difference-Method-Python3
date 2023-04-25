@@ -4,7 +4,6 @@ __pycache__/
 
 # images
 img/
-*.gif
 *.png
 
 # main.py

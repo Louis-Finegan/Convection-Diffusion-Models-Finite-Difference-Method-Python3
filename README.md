@@ -38,6 +38,30 @@ $$\frac{\partial u}{\partial t} = \mathbf{c} \cdot \nabla u$$
 
 
 
+## Examples
+
+Consider a Diffusion Convection model in 2 dimension with the vector $\mathbf{c}$ having equal vector components and $D$ is constant.
+
+Let $\mathbf{c} = [-0.1, -0.1]$ and $D = 0.009$.
+
+### Diffusion Convection Model
+
+Solution:
+
+![Diffusion Convection Model](./img/animation_diffusion_convection.gif)
+
+### Diffusion Model
+
+Solution:
+
+![Diffusion Model](./img/animation_diffusion.gif)
+
+### Convection Model
+
+Solution:
+
+![Convection Model](./img/animation_convection.gif)
+
 ## Applications
 
 Some applications of these models include:

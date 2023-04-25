@@ -162,7 +162,7 @@ class diffusion_2dims:
 # Note: dx denoted by the parameter `dx`.
 # Note: `diffusion` is the diffusion coefficent and is constant.
 # Note: `init` is the initial condition
-class diffuision_1dims:
+class diffusion_1dims:
     '''
     ## Diffusion equation in 1 dimensions
     
