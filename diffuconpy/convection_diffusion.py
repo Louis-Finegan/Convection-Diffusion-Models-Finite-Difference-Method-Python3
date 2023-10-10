@@ -178,7 +178,7 @@ class convection_diffusion_1dims:
         Solves the 1 dimensional Diffusion Convection Equation under Neumann Boundary Conditions.
         """
 
-        if len(boundary_flux) == 2: 
+        if len(boundary_flux) != 2: 
             raise ValueError(f'Boundary flux list should have a lenght of 2 but boundary_flux list is given with lenght {len(boundary_flux)}') 
                 
         solution = []
