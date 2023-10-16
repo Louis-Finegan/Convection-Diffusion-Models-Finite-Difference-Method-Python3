@@ -17,16 +17,16 @@ def animation_2(solution: np.ndarray, X: np.ndarray, Y: np.ndarray, xlab: str, y
     plot = [ax.plot_surface(X, Y, solution[0, :, :], color='0.75', rstride=1, cstride=1)]
     ax.set_zlim(zlim[0], zlim[1])
 
-    if xlab != None:
+    if xlab is not None:
         ax.set_xlabel(xlab)
     
-    if ylab != None:
+    if ylab is not None:
         ax.set_ylabel(ylab)
     
-    if zlab != None:
+    if zlab is not None:
         ax.set_zlabel(zlab)
 
-    if title != None:
+    if title is not None:
         ax.set_title(title)
 
 
@@ -48,13 +48,13 @@ def animation_1(solution: np.ndarray, X: np.ndarray, xlab: str, ylab: str, title
         line.set_ydata(y)
         return line,
 
-    if xlab != None:
+    if xlab is not None:
         plt.xlabel(xlab)
         
-    if ylab != None:
+    if ylab is not None:
         plt.ylabel(ylab)
 
-    if title != None:
+    if title is not None:
         plt.title(title)
 
     # call the animator.
@@ -86,22 +86,44 @@ def animation_color(solution: np.ndarray, fps: float, frn: int, filename: str):
     anim.save(filename, writer='pillow', fps=fps)
 
 
-def animation_hist(data: np.ndarray, bins: int, color: str, ylim_: float, fps: float, frn: int, filename: str):
-    def prepare_animation(bar_container):
-        
-        def animate(frame_number):
-            n, _ = np.histogram(data[:, frame_number], bins)
-            for count, rect in zip(n, bar_container.patches):
-                rect.set_height(count)
-            return bar_container.patches
-        return animate
-
-    # Output generated via `matplotlib.animation.Animation.to_jshtml`.
+def animate_histogram(data: np.ndarray, bins: int, interval: int, xlim: tuple, xlab: str, title: str, color: str, fps: float, frn: float, filename: str):
     fig, ax = plt.subplots()
-    _, _, bar_container = ax.hist(data, bins, lw=1, ec="white", fc=color, alpha=0.5)
-    ax.set_ylim(top=ylim_)  # set safe limit to ensure that all data is visible.
 
-    ani = animation.FuncAnimation(fig, prepare_animation(bar_container), frn, repeat=False, blit=True)
+    n_cols = data.shape[1]  # Get the number of columns
+
+    if n_cols == 0:
+        raise ValueError(f'Number of columns in `data` should be greater than 0. Number of columns given {n_cols}')
+    
+    if xlim is not None:
+        range1, range2 = xlim
+    else:
+        range1, range2 = data.min(), data.max()
+
+    # Initialize the histogram with the first column of data
+    hist, bin_edges = np.histogram(data[:, 0], bins=bins, range=(range1, range2), density=True)
+    bar = ax.bar(bin_edges[:-1], hist, width=bin_edges[1] - bin_edges[0], color=color, edgecolor='black', linewidth=1)
+
+    def update(frame):
+        # Check if the frame is within the valid range of columns
+        if frame >= n_cols:
+            return
+
+        # Compute the histogram for the current frame's data column
+        hist, _ = np.histogram(data[:, frame], bins=bin_edges, density=True)
+        #hist = hist / (bin_edges[1] - bin_edges[0])  # Normalize by bin width
+
+        # Update the heights of the existing bars in the histogram
+        for h, rect in zip(hist, bar):
+            rect.set_height(h)
+
+    if xlab is not None:
+        plt.xlabel(xlab)
+
+    if title is not None:
+        plt.title(title)
+    
+    ani = animation.FuncAnimation(fig, update, frames=range(n_cols), interval=interval, repeat=False)
+    
 
     plt.close()
     ani.save(filename, writer='pillow', fps=fps)
