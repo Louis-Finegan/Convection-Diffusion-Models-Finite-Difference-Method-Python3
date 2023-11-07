@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.animation as animation
 
-# Animates the diffusion process in 2 dimensions
+# Animates the solution curve in 2 dimensions
 def animation_2(solution: np.ndarray, X: np.ndarray, Y: np.ndarray, xlab: str, ylab: str, zlab: str, title: str, zlim: tuple, fps: float, frn: int, filename: str):
     plt.rcParams["figure.figsize"] = [10, 10]
     plt.rcParams["figure.autolayout"] = True
@@ -17,15 +17,19 @@ def animation_2(solution: np.ndarray, X: np.ndarray, Y: np.ndarray, xlab: str, y
     plot = [ax.plot_surface(X, Y, solution[0, :, :], color='0.75', rstride=1, cstride=1)]
     ax.set_zlim(zlim[0], zlim[1])
 
+    # x label
     if xlab is not None:
         ax.set_xlabel(xlab)
     
+    # y label
     if ylab is not None:
         ax.set_ylabel(ylab)
     
+    # z label
     if zlab is not None:
         ax.set_zlabel(zlab)
 
+    # title
     if title is not None:
         ax.set_title(title)
 
@@ -35,11 +39,11 @@ def animation_2(solution: np.ndarray, X: np.ndarray, Y: np.ndarray, xlab: str, y
     ani.save(filename, writer='pillow', fps=fps)
 
 
-# Animates the diffusion process in 1 dimension
+# Animates the solution curve in 1 dimension
 def animation_1(solution: np.ndarray, X: np.ndarray, xlab: str, ylab: str, title: str, color: str, xlim_: tuple, ylim_: tuple, fps: float, frn: int, filename: str):
     fig = plt.figure()
     ax = plt.axes(xlim=(xlim_[0], xlim_[1]), ylim=(ylim_[0], ylim_[1]))
-    line, = ax.plot(X, solution[0], color = color)
+    line, = ax.plot(X, solution[0], color=color)
 
     # animation function.  This is called sequentially
     def animate(i):
@@ -48,12 +52,15 @@ def animation_1(solution: np.ndarray, X: np.ndarray, xlab: str, ylab: str, title
         line.set_ydata(y)
         return line,
 
+    # x label
     if xlab is not None:
         plt.xlabel(xlab)
         
+    # y label
     if ylab is not None:
         plt.ylabel(ylab)
 
+    # title
     if title is not None:
         plt.title(title)
 
@@ -63,7 +70,7 @@ def animation_1(solution: np.ndarray, X: np.ndarray, xlab: str, ylab: str, title
     anim.save(filename, writer='pillow', fps=fps)
 
 
-# Animates the diffusion process in 2 dimensions but as a color plot
+# Animates the solution curve in 2 dimensions but as a color plot
 def animation_color(solution: np.ndarray, fps: float, frn: int, filename: str):
     # Create the figure and axis objects
     fig, ax = plt.subplots()
@@ -85,8 +92,8 @@ def animation_color(solution: np.ndarray, fps: float, frn: int, filename: str):
     plt.close()
     anim.save(filename, writer='pillow', fps=fps)
 
-
-def animate_histogram(data: np.ndarray, bins: int, interval: int, xlim: tuple, xlab: str, title: str, color: str, fps: float, frn: float, filename: str):
+# Animates a histogram of `data` with solution curve `solution`.
+def animate_histogram(data: np.ndarray, solution: np.ndarray, X: np.ndarray, bins: int, interval: int, xlim: tuple, xlab: str, title: str, color: str, color_curve: str, fps: float, frn: float, filename: str):
     fig, ax = plt.subplots()
 
     n_cols = data.shape[1]  # Get the number of columns
@@ -103,6 +110,9 @@ def animate_histogram(data: np.ndarray, bins: int, interval: int, xlim: tuple, x
     hist, bin_edges = np.histogram(data[:, 0], bins=bins, range=(range1, range2), density=True)
     bar = ax.bar(bin_edges[:-1], hist, width=bin_edges[1] - bin_edges[0], color=color, edgecolor='black', linewidth=1)
 
+    y = solution[0]
+    curve, = ax.plot(X, y, color=color_curve)
+
     def update(frame):
         # Check if the frame is within the valid range of columns
         if frame >= n_cols:
@@ -110,15 +120,21 @@ def animate_histogram(data: np.ndarray, bins: int, interval: int, xlim: tuple, x
 
         # Compute the histogram for the current frame's data column
         hist, _ = np.histogram(data[:, frame], bins=bin_edges, density=True)
-        #hist = hist / (bin_edges[1] - bin_edges[0])  # Normalize by bin width
 
         # Update the heights of the existing bars in the histogram
         for h, rect in zip(hist, bar):
             rect.set_height(h)
 
+        # Updates each frame of the solution curve
+        y = solution[frame, :]
+        curve.set_ydata(y)
+
+
+    # x label
     if xlab is not None:
         plt.xlabel(xlab)
 
+    # title
     if title is not None:
         plt.title(title)
     
@@ -127,3 +143,4 @@ def animate_histogram(data: np.ndarray, bins: int, interval: int, xlim: tuple, x
 
     plt.close()
     ani.save(filename, writer='pillow', fps=fps)
+
