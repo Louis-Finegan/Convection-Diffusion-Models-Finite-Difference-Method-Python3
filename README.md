@@ -44,19 +44,19 @@ Let $\mathbf{c} = [-0.1, -0.1]$ and $D = 0.009$. (Neumann boundary condition and
 
 Solution:
 
-![!\[Diffusion Convection Model\](./img/animation_diffusion_convection.gif)](examples/img/animation_convection_diffusion_2dims_dirichlet_color.gif)
+<img src="examples\img\animation_convection_diffusion_2dims_dirichlet_color.gif" width="" height="" />
 
 ### Diffusion Model
 
 Solution:
 
-![diffusion](examples/img/animation_diffusion_2dims_dirichlet_color.gif)
+<img src="examples\img\animation_diffusion_2dims_dirichlet_color.gif" width="" height="" />
 
 ### Convection Model
 
 Solution:
 
-![convection](examples/img/animation_convection_2dims_color.gif)
+<img src="examples\img\animation_convection_2dims_color.gif" width="" height="" />
 
 ## Applications
 
