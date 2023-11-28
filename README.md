@@ -34,33 +34,29 @@ Suppose a model where $D = 0$. this can be interpreted as a under going convecti
 
 $$\frac{\partial u}{\partial t} = \mathbf{c} \cdot \nabla u$$
 
-## How to use
-
-
-
 ## Examples
 
 Consider a Diffusion Convection model in 2 dimension with the vector $\mathbf{c}$ having equal vector components and $D$ is constant.
 
-Let $\mathbf{c} = [-0.1, -0.1]$ and $D = 0.009$.
+Let $\mathbf{c} = [-0.1, -0.1]$ and $D = 0.009$. (Neumann boundary condition and 3d animations can be found in  [Two dimensional examples](examples/Two_Dimensional_Models.ipynb))
 
 ### Diffusion Convection Model
 
 Solution:
 
-![Diffusion Convection Model](./img/animation_diffusion_convection.gif)
+![!\[Diffusion Convection Model\](./img/animation_diffusion_convection.gif)](examples/img/animation_convection_diffusion_2dims_dirichlet_color.gif)
 
 ### Diffusion Model
 
 Solution:
 
-![Diffusion Model](./img/animation_diffusion.gif)
+![diffusion](examples/img/animation_diffusion_2dims_dirichlet_color.gif)
 
 ### Convection Model
 
 Solution:
 
-![Convection Model](./img/animation_convection.gif)
+![convection](examples/img/animation_convection_2dims_color.gif)
 
 ## Applications
 
@@ -71,5 +67,3 @@ Some applications of these models include:
 2. Tranportation of a fluids density distribution that is flowing uniformly.
 
 3. Fokker Plank Equation of a Stochastic Differential Equation with uniform drift and standard deviation.
-
-4. Shrodinger's Equation of a free particle in Quantum Mechanics.

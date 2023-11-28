@@ -5,9 +5,3 @@ __pycache__/
 # images
 img/
 *.png
-
-# main.py
-main.py
-
-# plain text
-.txt

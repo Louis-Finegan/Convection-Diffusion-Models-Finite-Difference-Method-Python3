@@ -5,8 +5,6 @@ import matplotlib.animation as animation
 
 # Animates the solution curve in 2 dimensions
 def animation_2(solution: np.ndarray, X: np.ndarray, Y: np.ndarray, xlab: str, ylab: str, zlab: str, title: str, zlim: tuple, fps: float, frn: int, filename: str):
-    plt.rcParams["figure.figsize"] = [10, 10]
-    plt.rcParams["figure.autolayout"] = True
 
     def change_plot(frame_num, solution, plot):
         plot[0].remove()
@@ -71,20 +69,32 @@ def animation_1(solution: np.ndarray, X: np.ndarray, xlab: str, ylab: str, title
 
 
 # Animates the solution curve in 2 dimensions but as a color plot
-def animation_color(solution: np.ndarray, fps: float, frn: int, filename: str):
+def animation_color(solution: np.ndarray, xlab: str, ylab: str, title: str, xlim_: tuple, ylim_: tuple, fps: float, frn: int, filename: str):
     # Create the figure and axis objects
     fig, ax = plt.subplots()
 
     # Set the axis limits
-    ax.set_xlim(-5, 5)
-    ax.set_ylim(-5, 5)
+    ax.set_xlim(xlim_[0], xlim_[1])
+    ax.set_ylim(ylim_[0], ylim_[1])
 
     # Define the plotting function
     def update_plot(i):
         im.set_array(solution[i, :, :])
 
     # Create the initial plot
-    im = ax.imshow(solution[0, :, :], extent=[-5, 5, -5, 5], cmap='viridis')
+    im = ax.imshow(solution[0, :, :], extent=[xlim_[0], xlim_[1], ylim_[0], ylim_[1]], cmap='viridis')
+
+    # x label
+    if xlab is not None:
+        plt.xlabel(xlab)
+        
+    # y label
+    if ylab is not None:
+        plt.ylabel(ylab)
+
+    # title
+    if title is not None:
+        plt.title(title)
 
     # Create the animation object
     anim = animation.FuncAnimation(fig, update_plot, frames=frn, interval=1/fps)
