@@ -51,11 +51,14 @@ jobs:
         with:
           ruby-version: '3.x'
 
+      - name: Set Bundler path
+        run: echo "export BUNDLE_PATH=./vendor/bundle" >> $GITHUB_ENV
+
       - name: Install Bundler
         run: gem install bundler
 
       - name: Install dependencies with Bundler
-        run: bundle install
+        run: bundle install --path=./vendor/bundle --jobs 4 --retry 3
         working-directory: ${{ github.workspace }}
 
       - name: Build with Jekyll
