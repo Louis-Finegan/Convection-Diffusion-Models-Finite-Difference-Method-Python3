@@ -41,22 +41,29 @@ jobs:
 
       - name: Convert notebooks to HTML
         run: |
-          mkdir -p ./_site/examples
+          mkdir -p ./notebooks_html
           for notebook in examples/*.ipynb; do
-            jupyter nbconvert --to html --output-dir ./_site/examples "$notebook"
+            jupyter nbconvert --to html --output-dir ./examples_html "$notebook"
           done
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: ./
-          destination: ./_site
+        run: |
+          bundle install
+          bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
+      - name: Move converted notebooks to _site
+        run: |
+          cp -r ./notebooks_html/* ./_site/examples/
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
 
   # Deployment job
   deploy:
